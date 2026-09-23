@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base
-import auth_routes
+
+from database import Base, engine
+from auth_routes import router as auth_router
+from routers.books import router as books_router
+from routers.readers import router as readers_router
+from routers.users import router as users_router
+
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Library API")
+app = FastAPI(
+    title="Library API",
+    description="API ",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,8 +23,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_routes.router)
+app.include_router(auth_router)
+app.include_router(books_router)
+app.include_router(readers_router)
+app.include_router(users_router)
+
 
 @app.get("/")
 def root():
-    return {"message": "перейдите на /docs для тестирования"}
+    return {
+        "message": "Library API запущен",
+        "docs": "/docs"
+    }
+
