@@ -7,28 +7,27 @@ def seed_database():
     db = SessionLocal()
 
     try:
-        if db.query(User).count() == 0:
-            users = [
-                User(
-                    username="admin",
-                    email="admin@library.ru",
-                    password_hash=get_password_hash("admin123"),
-                    role="admin",
-                    is_active=True
-                ),
-                User(
-                    username="librarian1",
-                    email="lib1@library.ru",
-                    password_hash=get_password_hash("lib12345"),
-                    role="librarian",
-                    is_active=True
-                )
-            ]
-            db.add_all(users)
-            db.commit()
-            print("Наполнение базы данных успешно завершено!")
-        else:
-            print("ℹПользователи уже есть в базе данных")
+        db.query(User).delete()
+        
+        users = [
+            User(
+                username="admin",
+                email="admin@library.ru",
+                password_hash=get_password_hash("admin123"),
+                role="admin",
+                is_active=True
+            ),
+            User(
+                username="librarian1",
+                email="lib1@library.ru",
+                password_hash=get_password_hash("lib12345"),
+                role="librarian",
+                is_active=True
+            )
+        ]
+        db.add_all(users)
+        db.commit()
+        print("База данных успешно наполнена новыми пользователями!")
     except Exception as e:
         print("Ошибка при заполнении базы:", e)
         db.rollback()
