@@ -99,3 +99,23 @@ class TokenData(BaseModel):
     username: Optional[str] = None
     role: Optional[str] = None
 
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, Field
+
+class LoanCreate(BaseModel):
+    book_id: int
+    reader_id: int
+
+class LoanResponse(BaseModel):
+    id: int
+    book_id: int
+    reader_id: int
+    taken_at: datetime
+    returned_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class UserRoleUpdate(BaseModel):
+    role: str = Field(..., pattern="^(admin|librarian)$")

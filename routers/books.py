@@ -93,3 +93,18 @@ def delete_book(
     db.commit()
 
     return {"message": "Книга удалена"}
+
+@router.get("/search", response_model=list[BookResponse])
+def search_books(query: str, db: Session = Depends(get_db)):
+    """Поиск книг по названию или автору"""
+    search = f"%{query}%"
+    books = db.query(Book).filter(
+        (Book.title.ilike(search)) | (Book.author.ilike(search))
+    ).all()
+    return books
+
+@router.get("/available", response_model=list[BookResponse])
+def get_available_books(db: Session = Depends(get_db)):
+    """Список только доступных книг (где available_copies > 0)"""
+    return db.query(Book).filter(Book.available_copies > 0).all()
+
